@@ -2,7 +2,7 @@
 // @name         KOMCA work importer/editor into MusicBrainz
 // @namespace    https://github.com/meze4044/KOMCA-MusicBrainz-Importer
 // @downloadURL  https://github.com/meze4044/KOMCA-MusicBrainz-Importer/raw/main/komca-mb-importer.user.js
-// @version      2026.09.28
+// @version      2026.09.29
 // @description  One click imports KOMCA works into MusicBrainz (name, iswc, type, KOMCA id, credits, edit note), and allows searching MB by KOMCA ids
 // @author       meze
 // @licence      CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/
@@ -94,9 +94,26 @@
     return credits;
   }
 
-  function canonicalSourceUrl(workId) {
+  function canonicalSourceUrl(workId, sourceUrl = "") {
     if (!/^\d+$/.test(workId)) throw new Error("KOMCA work ID must contain digits only.");
-    return `https://www.komca.or.kr/srch2/srch_01.jsp?S_PROD_TTL=${workId}&S_PROD_TTL_GB=3&SLCT_SORT_FLDS=basic&PAGE_INIT=1&S_PAGENUMBER=1`;
+    let origin = "https://www.komca.or.kr";
+    let path = "/srch2/srch_01.jsp";
+    try {
+      const source = new URL(sourceUrl);
+      if (/^\/foreign2\/(?:eng|jap)\/S01\.jsp$/i.test(source.pathname)) {
+        origin = source.hostname === "komca.or.kr" ? "https://www.komca.or.kr" : source.origin;
+        path = source.pathname;
+      }
+    } catch {
+      // Use the Korean search URL when there is no usable source page URL.
+    }
+    const url = new URL(path, origin);
+    url.searchParams.set("S_PROD_TTL", workId);
+    url.searchParams.set("S_PROD_TTL_GB", "3");
+    url.searchParams.set("SLCT_SORT_FLDS", "basic");
+    url.searchParams.set("PAGE_INIT", "1");
+    url.searchParams.set("S_PAGENUMBER", "1");
+    return url.toString();
   }
 
   function titleSearchUrl(title) {
@@ -129,7 +146,7 @@
     return match ? match[1].replace(/\s+/g, "") : "";
   }
 
-  function readResult(article) {
+  function readResult(article, sourceUrl = typeof location === "undefined" ? "" : location.href) {
     const heading = findWorkHeading(article);
     const table = findRightsHolderTable(article);
     if (!heading || !table) throw new Error("This result has no recognized KOMCA title or rights-holder table.");
@@ -137,7 +154,7 @@
     const rows = [...table.querySelectorAll("tbody tr")].map((row) =>
       [...row.querySelectorAll(":scope > td")].map((cell) => cell.textContent.trim()),
     );
-    return { ...work, iswc: parseIswc(article.textContent || ""), credits: parseRightsRows(rows), sourceUrl: canonicalSourceUrl(work.workId) };
+    return { ...work, iswc: parseIswc(article.textContent || ""), credits: parseRightsRows(rows), sourceUrl: canonicalSourceUrl(work.workId, sourceUrl) };
   }
 
   function workHasLyrics(work) {
@@ -633,7 +650,7 @@
       try {
         button.disabled = true;
         button.textContent = "Opening MB...";
-        const work = readResult(article);
+        const work = readResult(article, location.href);
         const seed = buildMusicBrainzUrl(work);
         window.open(seed.url, "_blank", "noopener");
         button.disabled = false;

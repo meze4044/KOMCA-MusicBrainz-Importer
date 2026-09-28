@@ -13,3 +13,5 @@ Always check your original source, such as physical media or DSP, for artist cre
 For example, KOMCA often lists each member of a group even when the group is credited.
 
 A single KOMCA ID may map to multiple MusicBrainz entities.
+
+Based on [JASRAC Importer](https://github.com/jesus2099/konami-command/blob/master/jasrac-mb-minc_WORK-IMPORT-CROSS-LINKING.user.js), thank you :)

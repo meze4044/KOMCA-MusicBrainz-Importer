@@ -5,8 +5,7 @@
 // @version      2026.09.29
 // @description  One click imports KOMCA works into MusicBrainz (name, iswc, type, KOMCA id, credits, edit note), and allows searching MB by KOMCA ids
 // @author       meze
-// @licence      CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/
-// @licence      GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
+// @license      GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
 // @since        2026-09-28
 // @match        https://www.komca.or.kr/srch2/srch_01.jsp*
 // @match        https://komca.or.kr/srch2/srch_01.jsp*
@@ -24,6 +23,7 @@
 // @exclude      *.org/work/*/*edits*
 // @run-at       document-idle
 // ==/UserScript==
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 (function () {
   "use strict";

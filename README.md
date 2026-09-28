@@ -15,3 +15,9 @@ For example, KOMCA often lists each member of a group even when the group is cre
 A single KOMCA ID may map to multiple MusicBrainz entities.
 
 Based on [JASRAC Importer](https://github.com/jesus2099/konami-command/blob/master/jasrac-mb-minc_WORK-IMPORT-CROSS-LINKING.user.js), thank you :)
+
+### Disclaimer
+
+This userscript is not affiliated with or endorsed by KOMCA.
+It operates on pages manually accessed by the user and does not crawl or bulk-download the KOMCA database.
+Users are responsible for ensuring that their use complies with KOMCA's applicable terms and policies.
